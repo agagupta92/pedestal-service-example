@@ -1,0 +1,20 @@
+# filepath: .github/workflows/pr-description-check.yml
+name: PR Description Check
+
+on:
+  pull_request:
+    types: [opened, edited,reopned]
+
+jobs:
+  check-description:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR Description
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const description = context.payload.pull_request.body || "";
+            const regex = /^[A-Z]+-\d+ - .+/;
+            if (!regex.test(description)) {
+              throw new Error("Pull request description does not follow the required format: 'CEPG-1234 - Description of Changes'.");
+            }
